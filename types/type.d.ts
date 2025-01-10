@@ -82,11 +82,11 @@ declare interface InputFieldProps extends TextInputProps {
     label: string;
     icon?: any;
     secureTextEntry?: boolean;
-    labelStyle?: string;
-    containerStyle?: string;
-    inputStyle?: string;
-    iconStyle?: string;
-    className?: string;
+    labelStyle: string;
+    containerStyle: string;
+    inputStyle: string;
+    iconStyle: string;
+    style: string;
 }
 
 declare interface PaymentProps {
