@@ -1,5 +1,8 @@
+import CustomButton from '@/components/CustomButton'
 import CustomInput from '@/components/CustomInput'
+import OAuth from '@/components/OAuth'
 import { icons, images } from '@/constants'
+import { Link } from 'expo-router'
 import { useState } from 'react'
 import {ScrollView, View,Image,Text } from 'react-native'
 import tw from "twrnc"
@@ -10,6 +13,10 @@ const SignUp = () => {
     email:"",
     password:""
   })
+
+  const handleSubmit= async()=>{
+    console.log(form)
+  }
   return (
     <ScrollView style={tw`flex-1 bg-white`}>
       <View style={tw`flex-1 bg-white`}>
@@ -23,7 +30,7 @@ const SignUp = () => {
            label='Name' 
            labelStyle=''
            value={form.name}
-           onChangeText={()=> setForm({...form, name: form.name})}
+           onChangeText={(value)=> setForm({...form, name: value})}
            placeholder='Enter your name'
            icon={icons.person}
            inputStyle=''
@@ -35,9 +42,9 @@ const SignUp = () => {
            label='Email' 
            labelStyle=''
            value={form.email}
-           onChangeText={()=> setForm({...form, email: form.email})}
+           onChangeText={(value)=> setForm({...form, email: value})}
            placeholder='Enter your email address'
-           icon={icons.person}
+           icon={icons.email}
            inputStyle=''
            containerStyle=''
            iconStyle='' 
@@ -47,15 +54,27 @@ const SignUp = () => {
            label='Password' 
            labelStyle=''
            value={form.password}
-           onChangeText={()=> setForm({...form, password: form.password})}
+           onChangeText={(value)=> setForm({...form, password: value})}
            placeholder='Enter your Password'
-           icon={icons.person}
+           icon={icons.lock}
            inputStyle=''
            containerStyle=''
            iconStyle='' 
            style=''
            secureTextEntry={true}
             />
+
+          <CustomButton
+          title='Sign Up'
+          onPress={handleSubmit}
+          style="mt-6"
+            
+          />
+          <OAuth/>
+          <Link href="/(auth)/sign-in" style={[tw`mt-10 text-center text-lg`,{color:"#858585"}]}>
+           <Text>Already have an account? </Text>
+           <Text style={[ {color: "#0286FF"}]}>Log In</Text>
+          </Link>
         </View>
       </View>
 
