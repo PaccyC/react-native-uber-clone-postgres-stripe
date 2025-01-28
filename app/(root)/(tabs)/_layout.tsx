@@ -12,7 +12,7 @@ const TabIcon = ({
   focused: boolean;
 }) => (
   <View
-    style={tw`flex flex-row justify-center items-center rounded-full ${focused ? "bg-[#EEEEEE]" : ""}`}
+    style={tw`flex  flex-row justify-center items-center rounded-full `}
   >
     <View
       style={tw`rounded-full w-12 h-12 items-center justify-center ${focused ? "bg-[#0CC25F]" : ""}`}
