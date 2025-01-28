@@ -1,10 +1,13 @@
+import GoogleTextInput from '@/components/GoogleTextInput'
+import Map from '@/components/Map'
 import RideCard from '@/components/RideCard'
 import { icons, images } from '@/constants'
+import { useLocationStore } from '@/store'
 import { useUser } from '@clerk/clerk-expo'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ActivityIndicator, FlatList, Image, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
 import tw from 'twrnc'
-
+import * as Location from "expo-location"
 
 const recentRides:any=[
   {
@@ -106,11 +109,38 @@ const recentRides:any=[
 ]
 export default function Page() {
   const { user } = useUser()
-
+  const {setDestinationLocation,setUserLocation}= useLocationStore()
+  const [hasPermissions,setHasPermissions]= useState(false)
   const [isLoading,setIsLoading]= useState(false);
-  const handleSignOut =()=>{
 
+  useEffect(()=>{
+     const requestLocation = async()=>{
+
+      let {status}= await Location.getForegroundPermissionsAsync();
+      if(status !== "granted"){
+        setHasPermissions(false)
+        return;
+      }
+      let location= await Location.getCurrentPositionAsync();
+      const address= await Location.reverseGeocodeAsync({
+        latitude:location.coords.latitude,
+        longitude:location.coords.longitude,
+      })
+      setUserLocation({
+        latitude: 37.78825,
+        longitude: -122.4324,
+        address:`${address[0].name},${address[0].region}`
+      })
+     }
+     requestLocation()
+  },[])
+
+
+  const handleSignOut =()=>{
   }
+  const handleDestinationPress =()=>{
+  }
+
   return (
     <SafeAreaView style={tw`bg-[#F6F8FA]`}>
      
@@ -144,12 +174,33 @@ export default function Page() {
        )}
 
        ListHeaderComponent={()=>(
+        <>
         <View style={tw` flex flex-row items-center justify-between my-5`}>
           <Text style={[tw`text-xl capitalize`,{fontFamily: "Jakarta-ExtraBold"}]}>Welcome { user?.firstName  || user?.emailAddresses[0].emailAddress.split("@")[0]}{" "} 👋</Text>
           <TouchableOpacity style={tw`justify-center items-center w-10 h-10 bg-white`} onPress={handleSignOut}>
             <Image style={tw`w-4 h-4`} source={icons.out}/>
           </TouchableOpacity>
         </View>
+        <GoogleTextInput
+         icon={icons.search}
+         containerStyle= "bg-white shadow-md shadow-neutral-300"
+         handlePress={handleDestinationPress}
+        />
+        <>
+          <Text style={[tw`text-xl mt-5 mb-3`,{fontFamily:"Jakarta-Bold"}]}>
+            Your Current Location
+          </Text>
+          <View style={tw`flex flex-row items-center bg-transparent h-[300px]`}>
+            <Map/>
+          </View>
+
+          <Text style={[tw`text-xl mt-5 mb-3`,{fontFamily:"Jakarta-Bold"}]}>
+              Recent Rides
+          </Text>
+      
+        </>
+
+        </>
        )}
        />
     </SafeAreaView>
