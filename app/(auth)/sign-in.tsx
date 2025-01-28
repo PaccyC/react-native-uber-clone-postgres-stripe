@@ -2,21 +2,46 @@ import CustomButton from '@/components/CustomButton'
 import CustomInput from '@/components/CustomInput'
 import OAuth from '@/components/OAuth'
 import { icons, images } from '@/constants'
-import { Link } from 'expo-router'
+import { useSignIn } from '@clerk/clerk-expo'
+import { Link, useRouter } from 'expo-router'
+import React from 'react'
 import { useState } from 'react'
-import {ScrollView, View,Image,Text } from 'react-native'
+import {ScrollView, View,Image,Text, Alert } from 'react-native'
 import tw from "twrnc"
 
 const SignIn = () => {
+
+  const { signIn, setActive, isLoaded } = useSignIn()
+  const router = useRouter()
   const [form, setForm]= useState({
 
     email:"",
     password:""
   })
 
-  const handleSubmit= async()=>{
-    console.log(form)
-  }
+  const onSignInPress = React.useCallback(async () => {
+    if (!isLoaded) return
+
+    try {
+      const signInAttempt = await signIn.create({
+        identifier: form.email,
+        password:form.password,
+      })
+
+      if (signInAttempt.status === 'complete') {
+        await setActive({ session: signInAttempt.createdSessionId })
+        router.replace('/')
+      } else {
+        
+        console.error(JSON.stringify(signInAttempt, null, 2))
+      }
+    } 
+    catch (err:any) {
+      Alert.alert("Error", err.errors[0].message)
+    }
+
+  }, [isLoaded, form.email, form.password])
+
   return (
     <ScrollView style={tw`flex-1 bg-white`}>
       <View style={tw`flex-1 bg-white`}>
@@ -54,7 +79,7 @@ const SignIn = () => {
 
           <CustomButton
           title='Sign In'
-          onPress={handleSubmit}
+          onPress={onSignInPress}
           style="mt-6"
             
           />
