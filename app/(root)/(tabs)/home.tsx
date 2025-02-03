@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { ActivityIndicator, FlatList, Image, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
 import tw from 'twrnc'
 import * as Location from "expo-location"
+import { router } from 'expo-router'
 
 const recentRides:any=[
   {
@@ -138,7 +139,9 @@ export default function Page() {
 
   const handleSignOut =()=>{
   }
-  const handleDestinationPress =()=>{
+  const handleDestinationPress =(location:{latitude:number,longitude:number,address: string})=>{
+   setDestinationLocation(location)
+   router.push("/(root)/find-ride")
   }
 
   return (
@@ -185,6 +188,7 @@ export default function Page() {
          icon={icons.search}
          containerStyle= "bg-white shadow-md shadow-neutral-300"
          handlePress={handleDestinationPress}
+        
         />
         <>
           <Text style={[tw`text-xl mt-5 mb-3`,{fontFamily:"Jakarta-Bold"}]}>
